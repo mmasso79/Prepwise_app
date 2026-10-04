@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PrepWise</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PrepWise">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231F8A4C'/%3E%3Ctext x='50' y='66' font-size='52' text-anchor='middle'%3E%F0%9F%A7%BA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --kraft:#FBF3DD; --kraft-dark:#F5E7BE; --ink:#24301F;
+  --basil:#1F8A4C; --basil-dim:#2BAE66;
+  --rust:#E8502B; --rust-dim:#F2764F;
+  --mustard:#F2A91E;
+  --card:#FFFDF6; --line:#E8D9A0;
+  --radius:10px;
+  font-family:'Work Sans',system-ui,sans-serif;
+  padding-top:env(safe-area-inset-top,0px);
+  box-sizing:border-box;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --kraft:#20170A; --kraft-dark:#2B1F0D; --ink:#FBF0D6; --card:#33270F; --line:#5C4A22; --basil:#3FC779; --basil-dim:#2BAE66; --rust:#FF7A4D; --rust-dim:#E8502B; --mustard:#FFC53D; }
+}
+:root[data-theme="dark"]{ --kraft:#20170A; --kraft-dark:#2B1F0D; --ink:#FBF0D6; --card:#33270F; --line:#5C4A22; --basil:#3FC779; --basil-dim:#2BAE66; --rust:#FF7A4D; --rust-dim:#E8502B; --mustard:#FFC53D; }
+*{box-sizing:border-box;}
+html{scroll-padding-top:env(safe-area-inset-top,0px); height:100%;}
+body{margin:0; background:var(--kraft); color:var(--ink); min-height:100%;}
+.wrap{max-width:460px; margin:0 auto; padding:18px 18px 90px;}
+header{text-align:center; margin:-18px -18px 18px; padding:28px 18px 20px; background:linear-gradient(135deg, var(--basil), var(--rust) 130%); border-radius:0 0 18px 18px;}
+.brand{font-family:'Fraunces',serif; font-weight:700; font-size:28px; margin:0; color:#FFFDF6;}
+.motto{font-style:italic; font-family:'Fraunces',serif; color:#FFF4DC; font-size:14px; margin:3px 0 0;}
+.screen{display:none;} .screen.active{display:block;}
+.ticket{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px; margin-bottom:16px;}
+.row{display:flex; gap:8px; margin-bottom:10px;}
+input,select{font-size:15px; padding:10px 12px; border:1px solid var(--line); border-radius:var(--radius); background:var(--kraft); color:var(--ink); width:100%; font-family:inherit;}
+label{font-size:12px; color:var(--basil-dim); display:block; margin-bottom:4px; font-weight:600;}
+.field{flex:1;} .field.small{flex:0 0 96px;}
+button.primary{width:100%; padding:12px; border:none; border-radius:var(--radius); background:var(--basil); color:#F4EFDF; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit;}
+button.primary:active{background:var(--basil-dim);}
+.err{font-size:13px; color:var(--rust); margin:-2px 0 10px; display:none;}
+.notify{display:flex; align-items:center; gap:8px; font-size:13px; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);}
+.notify input{width:auto;}
+#pointsBar{display:none; justify-content:space-between; align-items:center; background:var(--mustard); color:#2A2318; border-radius:var(--radius); padding:10px 14px; margin-bottom:14px; font-weight:600; font-size:14px;}
+.section-label{font-family:'Fraunces',serif; font-weight:600; font-size:14px; color:var(--basil); margin:18px 0 8px;}
+.item{display:flex; justify-content:space-between; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:10px 12px; margin-bottom:7px;}
+.item .name{font-size:14px; font-weight:500;} .item .meta{font-size:11px; color:var(--basil-dim);}
+.item .price{font-size:15px; font-weight:600; text-align:right;}
+.tag{font-size:10px; padding:2px 7px; border-radius:10px; display:inline-block; margin-top:3px;}
+.tag.meat{background:var(--rust); color:#FCEFE6;} .tag.produce{background:var(--basil); color:#EAF2E9;}
+.skipped{opacity:.75; border-style:dashed;}
+.swap{font-size:11.5px; color:var(--rust-dim); margin-top:5px; padding-top:5px; border-top:1px dotted var(--line);}
+.summary{font-size:13px; color:var(--basil-dim); margin-bottom:10px;}
+.ad{background:var(--kraft-dark); border:1px dashed var(--line); border-radius:var(--radius); padding:12px 14px; margin-top:18px; font-size:13px;}
+.ad .ad-label{font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--basil-dim); margin-bottom:4px;}
+.empty{font-size:14px; color:var(--basil-dim); padding:14px 0;}
+.statrow{display:flex; gap:10px; margin-bottom:14px;}
+.stat{flex:1; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:12px; text-align:center;}
+.stat .n{font-family:'Fraunces',serif; font-size:22px; font-weight:600;}
+.stat .l{font-size:11px; color:var(--basil-dim);}
+.planrow{display:flex; justify-content:space-between; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:12px 14px; margin-bottom:10px;}
+.badge{font-size:10px; padding:2px 8px; border-radius:10px; background:var(--basil); color:#EAF2E9; font-weight:600;}
+.badge.free{background:var(--line); color:var(--ink);}
+nav.tabbar{position:fixed; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--line); display:flex; padding-bottom:env(safe-area-inset-bottom,0px);}
+nav.tabbar button{flex:1; background:none; border:none; padding:10px 4px 8px; font-size:11px; color:var(--basil-dim); font-family:inherit; cursor:pointer;}
+nav.tabbar button.active{color:var(--basil); font-weight:600;}
+nav.tabbar .ic{display:block; font-size:18px; margin-bottom:2px;}
+.switch{position:relative; width:42px; height:24px; flex:0 0 42px;}
+.switch input{opacity:0; width:0; height:0;}
+.slider{position:absolute; inset:0; background:var(--line); border-radius:12px; transition:.15s; cursor:pointer;}
+.slider:before{content:""; position:absolute; height:18px; width:18px; left:3px; top:3px; background:var(--card); border-radius:50%; transition:.15s;}
+input:checked + .slider{background:var(--basil);}
+input:checked + .slider:before{transform:translateX(18px);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="brand">PrepWise</p>
+  <p class="motto">making meal prepping budget friendly</p>
+</header>
+
+<!-- HOME -->
+<section class="screen active" id="screen-home">
+  <div class="ticket">
+    <div class="row">
+      <div class="field"><label for="zip">Zip code</label><input id="zip" type="text" inputmode="numeric" maxlength="5" placeholder="75201"></div>
+      <div class="field small"><label for="budget">Budget</label><input id="budget" type="number" min="1" placeholder="$30"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="goal">Diet goal</label>
+        <select id="goal">
+          <option value="general">General healthy eating</option>
+          <option value="weightloss">Weight loss / low calorie</option>
+          <option value="muscle">Muscle gain / high protein</option>
+          <option value="vegetarian">Vegetarian</option>
+          <option value="keto">Keto / low carb</option>
+        </select>
+      </div>
+    </div>
+    <div class="err" id="err"></div>
+    <button class="primary" id="go">Find this week's deals</button>
+    <div class="notify">
+      <input type="checkbox" id="notify">
+      <label for="notify" style="margin:0; font-weight:400;">Notify me when new weekly deals drop</label>
+    </div>
+  </div>
+  <div id="pointsBar"><span>Reward points this trip</span><span id="points">0</span></div>
+  <div id="results"></div>
+</section>
+
+<!-- SEARCH -->
+<section class="screen" id="screen-search">
+  <div class="ticket">
+    <div class="row">
+      <div class="field"><label for="zip2">Zip code</label><input id="zip2" type="text" inputmode="numeric" maxlength="5" placeholder="75201"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="searchTerm">Search for an item</label><input id="searchTerm" type="text" placeholder="chicken, spinach..."></div>
+      <div class="field small" style="flex:0 0 84px; display:flex; align-items:flex-end;">
+        <button id="searchGo" class="primary" style="background:var(--rust);">Search</button>
+      </div>
+    </div>
+    <div class="err" id="err2"></div>
+  </div>
+  <div id="searchResults"></div>
+</section>
+
+<!-- REWARDS -->
+<section class="screen" id="screen-rewards">
+  <div class="statrow">
+    <div class="stat"><div class="n" id="totalPoints">0</div><div class="l">Lifetime points</div></div>
+    <div class="stat"><div class="n" id="tripCount">0</div><div class="l">Trips logged</div></div>
+  </div>
+  <div class="section-label">How it works</div>
+  <div class="item" style="display:block;"><span class="tag produce">+15 pts</span> per produce item picked<br><span class="tag meat" style="margin-top:6px;">+5 pts</span> per meat item picked</div>
+  <div class="section-label">Redeem</div>
+  <div class="planrow"><span>$5 off next grocery haul</span><span class="badge">150 pts</span></div>
+  <div class="planrow"><span>Free gym day pass (local partner)</span><span class="badge">250 pts</span></div>
+  <div class="planrow"><span>$10 meal-prep service credit</span><span class="badge">400 pts</span></div>
+</section>
+
+<!-- SETTINGS -->
+<section class="screen" id="screen-settings">
+  <div class="section-label">Your plan</div>
+  <div class="planrow">
+    <div><div style="font-weight:500;">PrepWise <span class="badge" id="planBadge">Free</span></div><div style="font-size:12px; color:var(--basil-dim);" id="planDesc">Weekly deals, basic budget matching</div></div>
+  </div>
+  <button class="primary" id="upgradeBtn">Upgrade to Premium — $3.99/mo</button>
+  <div class="section-label">Notifications</div>
+  <div class="planrow"><span>Weekly deal alerts</span><label class="switch"><input type="checkbox" id="notifySettings"><span class="slider"></span></label></div>
+  <div class="planrow"><span>Price-drop alerts on staples</span><label class="switch"><input type="checkbox" id="notifyStaples"><span class="slider"></span></label></div>
+  <div class="section-label">Store data</div>
+  <div class="item" style="display:block; font-size:13px; line-height:1.5;">
+    Store names reflect real regional chains. Live store lookup and pricing require a connected Google Places API key and a weekly circular data feed — not yet connected in this preview.
+  </div>
+</section>
+
+</div>
+
+<nav class="tabbar">
+  <button data-screen="home" class="active"><span class="ic">🧺</span>Home</button>
+  <button data-screen="search"><span class="ic">🔍</span>Search</button>
+  <button data-screen="rewards"><span class="ic">🌿</span>Rewards</button>
+  <button data-screen="settings"><span class="ic">⚙️</span>Settings</button>
+</nav>
+
+<script>
+document.querySelectorAll('nav.tabbar button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.tabbar button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('screen-'+btn.dataset.screen).classList.add('active');
+  });
+});
+
+const zipRegions = {"0":"Northeast","1":"Northeast","2":"Mid-Atlantic","3":"Southeast","4":"Midwest","5":"Midwest","6":"South Central","7":"South Central","8":"Mountain West","9":"West Coast"};
+const localNames = {"Northeast":["Stop & Shop","Wegmans"],"Mid-Atlantic":["Giant Food","Harris Teeter"],"Southeast":["Publix","Winn-Dixie"],"Midwest":["Meijer","Jewel-Osco"],"South Central":["H-E-B","Tom Thumb"],"Mountain West":["King Soopers","Smith's"],"West Coast":["Safeway","Trader Joe's"]};
+const bigChains = ["Walmart","Kroger","Target"];
+const gyms = {"Northeast":"a Planet Fitness","Mid-Atlantic":"an Anytime Fitness","Southeast":"a Crunch Fitness","Midwest":"an LA Fitness","South Central":"a Gold's Gym","Mountain West":"a 24 Hour Fitness","West Coast":"an Equinox"};
+const mealPrep = {"Northeast":"a Territory Foods","Mid-Atlantic":"a Trifecta Nutrition","Southeast":"a Clean Eatz","Midwest":"a Fitlife Foods","South Central":"a Snap Kitchen","Mountain West":"a Trifecta Nutrition","West Coast":"a Territory Foods"};
+const supplements = {"Northeast":"a GNC","Mid-Atlantic":"a Vitamin Shoppe","Southeast":"a GNC","Midwest":"a Vitamin Shoppe","South Central":"a GNC","Mountain West":"a Vitamin Shoppe","West Coast":"a GNC"};
+const items = [
+  {name:"Chicken breast (lb)", cat:"meat", healthy:false, base:3.49, cal:165, protein:31, veg:false, keto:true},
+  {name:"Ground beef (lb)", cat:"meat", healthy:false, base:4.29, cal:250, protein:26, veg:false, keto:true},
+  {name:"Pork chops (lb)", cat:"meat", healthy:false, base:3.99, cal:231, protein:23, veg:false, keto:true},
+  {name:"Bananas (lb)", cat:"produce", healthy:true, base:0.59, cal:89, protein:1, veg:true, keto:false},
+  {name:"Broccoli (lb)", cat:"produce", healthy:true, base:1.79, cal:34, protein:2.8, veg:true, keto:true},
+  {name:"Spinach (bag)", cat:"produce", healthy:true, base:2.49, cal:23, protein:2.9, veg:true, keto:true},
+  {name:"Apples (lb)", cat:"produce", healthy:true, base:1.29, cal:52, protein:0.3, veg:true, keto:false},
+  {name:"Bell peppers (lb)", cat:"produce", healthy:true, base:1.99, cal:31, protein:1, veg:true, keto:true},
+  {name:"Eggs (dozen)", cat:"produce", healthy:true, base:3.29, cal:78, protein:6.3, veg:true, keto:true}
+];
+function seededRand(seed){ let x = Math.sin(seed) * 10000; return x - Math.floor(x); }
+function buildStoreData(storeName, seedBase){
+  return items.map((it,i)=>{ const r = seededRand(seedBase + i*7.13); const price = Math.max(0.39, +(it.base * (0.75 + r*0.5)).toFixed(2)); return {...it, price, store: storeName}; });
+}
+function getStoresForZip(zip){
+  const region = zipRegions[zip[0]] || "Midwest"; const seedBase = parseInt(zip,10); let stores=[];
+  localNames[region].forEach((name,idx)=>stores.push({name,list:buildStoreData(name, seedBase+idx*100)}));
+  bigChains.forEach((name,idx)=>stores.push({name,list:buildStoreData(name, seedBase+500+idx*100)}));
+  return {region, seedBase, stores};
+}
+function goalScore(it, goal){
+  if(goal==="weightloss") return -it.cal;
+  if(goal==="muscle") return it.protein*10;
+  if(goal==="vegetarian") return it.veg ? 1 : -999;
+  if(goal==="keto") return it.keto ? 1 : -999;
+  return it.healthy ? 1 : 0;
+}
+
+// persisted stats
+let lifetimePoints = 0, trips = 0, premium = false;
+try{ lifetimePoints = parseInt(localStorage.getItem('bb_points')||'0'); trips = parseInt(localStorage.getItem('bb_trips')||'0'); premium = localStorage.getItem('bb_premium')==='1'; }catch(e){}
+function refreshRewardsUI(){
+  document.getElementById('totalPoints').textContent = lifetimePoints;
+  document.getElementById('tripCount').textContent = trips;
+  document.getElementById('planBadge').textContent = premium ? 'Premium' : 'Free';
+  document.getElementById('planBadge').className = 'badge' + (premium? '' : ' free');
+  document.getElementById('planDesc').textContent = premium ? 'Weekly deals, swap suggestions, diet-goal filtering, priority alerts' : 'Weekly deals, basic budget matching';
+  document.getElementById('upgradeBtn').textContent = premium ? 'Manage subscription' : 'Upgrade to Premium — $3.99/mo';
+}
+refreshRewardsUI();
+document.getElementById('upgradeBtn').addEventListener('click', ()=>{
+  premium = !premium;
+  try{ localStorage.setItem('bb_premium', premium?'1':'0'); }catch(e){}
+  refreshRewardsUI();
+});
+['notify','notifySettings'].forEach(id=>{
+  const el = document.getElementById(id);
+  try{ el.checked = localStorage.getItem('bb_notify')==='1'; }catch(e){}
+  el.addEventListener('change', (e)=>{
+    try{ localStorage.setItem('bb_notify', e.target.checked?'1':'0'); }catch(err){}
+    document.getElementById('notify').checked = e.target.checked;
+    document.getElementById('notifySettings').checked = e.target.checked;
+  });
+});
+try{ document.getElementById('notifyStaples').checked = localStorage.getItem('bb_notify_staples')==='1'; }catch(e){}
+document.getElementById('notifyStaples').addEventListener('change',(e)=>{ try{ localStorage.setItem('bb_notify_staples', e.target.checked?'1':'0'); }catch(err){} });
+
+document.getElementById("go").addEventListener("click", ()=>{
+  const zip = document.getElementById("zip").value.trim();
+  const budgetVal = document.getElementById("budget").value.trim();
+  const goal = document.getElementById("goal").value;
+  const err = document.getElementById("err");
+  if(!/^\d{5}$/.test(zip)){ err.textContent="Enter a valid 5-digit US zip code"; err.style.display="block"; return; }
+  const budget = parseFloat(budgetVal);
+  if(!budgetVal || isNaN(budget) || budget<=0){ err.textContent="Enter a budget greater than 0"; err.style.display="block"; return; }
+  err.style.display="none";
+
+  const {region, seedBase, stores} = getStoresForZip(zip);
+  let allDeals=[]; stores.forEach(s=>s.list.forEach(d=>allDeals.push(d)));
+  const cheapestByItem={};
+  allDeals.forEach(d=>{ if(!cheapestByItem[d.name] || d.price<cheapestByItem[d.name].price) cheapestByItem[d.name]=d; });
+  let candidates = Object.values(cheapestByItem).filter(d => goalScore(d,goal) > -999);
+  candidates.sort((a,b)=> (goalScore(b,goal)-goalScore(a,goal)) || (a.price-b.price));
+
+  let spent=0, points=0, picked=[], skipped=[];
+  candidates.forEach(d=>{ if(spent+d.price<=budget){ spent+=d.price; points+= d.healthy?15:5; picked.push(d); } else skipped.push(d); });
+
+  document.getElementById("pointsBar").style.display="flex";
+  document.getElementById("points").textContent=points;
+  lifetimePoints += points; trips += 1;
+  try{ localStorage.setItem('bb_points', lifetimePoints); localStorage.setItem('bb_trips', trips); }catch(e){}
+  refreshRewardsUI();
+
+  const el=document.getElementById("results"); el.innerHTML="";
+  const summary=document.createElement("div"); summary.className="summary";
+  summary.textContent = region+" region · spent $"+spent.toFixed(2)+" of $"+budget.toFixed(2)+" · "+picked.length+" of "+candidates.length+" items";
+  el.appendChild(summary);
+
+  if(picked.length){
+    const lbl=document.createElement("div"); lbl.className="section-label"; lbl.textContent="In your basket"; el.appendChild(lbl);
+    picked.sort((a,b)=>a.price-b.price).forEach(d=>{
+      const c=document.createElement("div"); c.className="item";
+      c.innerHTML = '<div><div class="name">'+d.name+'</div><div class="meta">'+d.store+'</div><span class="tag '+d.cat+'">'+(d.healthy?'+15':'+5')+' pts</span></div><div class="price">$'+d.price.toFixed(2)+'</div>';
+      el.appendChild(c);
+    });
+  } else {
+    const empty=document.createElement("div"); empty.className="empty"; empty.textContent="No items fit that budget and goal this week. Try raising the budget."; el.appendChild(empty);
+  }
+
+  if(skipped.length){
+    const leftover = +(budget-spent).toFixed(2);
+    const lbl=document.createElement("div"); lbl.className="section-label"; lbl.textContent="Didn't fit — $"+leftover.toFixed(2)+" left over"; el.appendChild(lbl);
+    const pickedDesc = picked.slice().sort((a,b)=>b.price-a.price);
+    skipped.sort((a,b)=>a.price-b.price).forEach(d=>{
+      const short=+(d.price-leftover).toFixed(2);
+      const c=document.createElement("div"); c.className="item skipped";
+      let swapHtml="";
+      const swap = pickedDesc.find(p=>p.price>d.price-leftover && (p.price+leftover)>=d.price);
+      if(swap){ const newTotal=+(spent-swap.price+d.price).toFixed(2); swapHtml='<div class="swap">Swap out '+swap.name+' ($'+swap.price.toFixed(2)+') to fit this — new total $'+newTotal.toFixed(2)+'</div>'; }
+      c.innerHTML = '<div style="width:100%"><div style="display:flex; justify-content:space-between;"><div><div class="name">'+d.name+'</div><div class="meta">'+d.store+' · $'+short.toFixed(2)+' over</div></div><div class="price">$'+d.price.toFixed(2)+'</div></div>'+swapHtml+'</div>';
+      el.appendChild(c);
+    });
+  }
+
+  const ad=document.createElement("div"); ad.className="ad";
+  const adPick = seedBase % 3;
+  const adText = adPick===0 ? gyms[region]+' — member discounts for healthy eaters near '+zip
+    : adPick===1 ? mealPrep[region]+' — budget-friendly prepped meals near '+zip
+    : supplements[region]+' — protein and vitamin deals near '+zip;
+  ad.innerHTML = '<div class="ad-label">Local partner</div>' + adText;
+  el.appendChild(ad);
+});
+
+document.getElementById("searchGo").addEventListener("click", ()=>{
+  const zip = document.getElementById("zip2").value.trim();
+  const term = document.getElementById("searchTerm").value.trim().toLowerCase();
+  const err = document.getElementById("err2");
+  if(!/^\d{5}$/.test(zip)){ err.textContent="Enter a valid 5-digit US zip code first"; err.style.display="block"; return; }
+  if(!term){ err.textContent="Type an item to search for"; err.style.display="block"; return; }
+  err.style.display="none";
+  const {stores} = getStoresForZip(zip);
+  let matches=[]; stores.forEach(s=>s.list.forEach(d=>{ if(d.name.toLowerCase().includes(term)) matches.push(d); }));
+  matches.sort((a,b)=>a.price-b.price);
+  const el=document.getElementById("searchResults"); el.innerHTML="";
+  const lbl=document.createElement("div"); lbl.className="section-label";
+  lbl.textContent = matches.length ? 'Prices for "'+term+'" near '+zip : 'No matches for "'+term+'"';
+  el.appendChild(lbl);
+  matches.forEach(d=>{
+    const c=document.createElement("div"); c.className="item";
+    c.innerHTML = '<div><div class="name">'+d.name+'</div><div class="meta">'+d.store+'</div><span class="tag '+d.cat+'">'+(d.healthy?'+15':'+5')+' pts</span></div><div class="price">$'+d.price.toFixed(2)+'</div>';
+    el.appendChild(c);
+  });
+});
+</script>
+</body>
+</html>
